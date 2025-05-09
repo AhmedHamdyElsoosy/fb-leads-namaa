@@ -50,7 +50,6 @@ app.post('/webhook', (req, res) => {
 
 app.get('/webhook', (req, res) => {
   console.log('GET /webhook hit');
-  ...
 });
 
 app.listen(port, () => console.log(`Server running on port ${port}`));
