@@ -7,7 +7,7 @@ const port = 3000;
 app.use(bodyParser.json());
 
 // Firebase Admin setup
-const serviceAccount = require('./serviceAccountKey.json');
+const serviceAccount = JSON.parse(process.env.SERVICE_ACCOUNT_KEY);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
