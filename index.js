@@ -34,13 +34,15 @@ app.get('/', (req, res) => {
 
 // Receive leads
 app.post('/webhook', (req, res) => {
+  console.log('POST /webhook hit', JSON.stringify(req.body, null, 2));
   const entries = req.body.entry;
   entries.forEach(entry => {
     entry.changes.forEach(change => {
       const leadData = change.value;
+      console.log('Received lead data:', leadData);
       db.collection('Leads').add(leadData)
-        .then(() => console.log('Lead saved to Firestore'))
-        .catch(err => console.error('Error saving lead:', err));
+        .then(() => console.log('✅ Lead saved to Firestore'))
+        .catch(err => console.error('❌ Error saving lead:', err));
     });
   });
   res.sendStatus(200);
