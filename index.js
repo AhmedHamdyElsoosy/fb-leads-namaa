@@ -62,7 +62,7 @@ app.post('/webhook', (req, res) => {
 
       console.log(`📝 Writing document with ID: ${leadData.leadgen_id}`);
 
-      db.collection('Leads').doc(leadData.leadgen_id).set(leadData)
+      db.collection('Leads-N').doc(leadData.leadgen_id).set(leadData)
         .then(() => console.log(`✅ Lead ${leadData.leadgen_id} saved to Firestore`))
         .catch(err => console.error('❌ Error saving lead:', err));
     });
