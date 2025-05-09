@@ -28,6 +28,10 @@ app.get('/webhook', (req, res) => {
   }
 });
 
+app.get('/', (req, res) => {
+  res.send('Server is alive!');
+});
+
 // Receive leads
 app.post('/webhook', (req, res) => {
   const entries = req.body.entry;
