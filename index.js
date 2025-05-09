@@ -21,36 +21,54 @@ app.get('/webhook', (req, res) => {
   const challenge = req.query['hub.challenge'];
 
   if (mode && token === VERIFY_TOKEN) {
-    console.log('Webhook verified');
+    console.log('✅ Webhook verified');
     res.status(200).send(challenge);
   } else {
+    console.error('❌ Webhook verification failed');
     res.sendStatus(403);
   }
 });
 
+// Health check route
 app.get('/', (req, res) => {
   res.send('Server is alive!');
 });
 
 // Receive leads
 app.post('/webhook', (req, res) => {
-  console.log('POST /webhook hit', JSON.stringify(req.body, null, 2));
+  console.log('🔥 POST /webhook hit');
+  console.log('📦 Full body:', JSON.stringify(req.body, null, 2));
+
   const entries = req.body.entry;
+  if (!entries) {
+    console.error('❌ No entries in request body');
+    res.sendStatus(400);
+    return;
+  }
+
   entries.forEach(entry => {
+    if (!entry.changes) {
+      console.error('❌ No changes in entry');
+      return;
+    }
+
     entry.changes.forEach(change => {
       const leadData = change.value;
-      console.log('Received lead data:', leadData);
-      // db.collection('Leads').add(leadData)
-db.collection('Leads').doc(leadData.leadgen_id).set(leadData)
-        .then(() => console.log('✅ Lead saved to Firestore'))
+
+      if (!leadData || !leadData.leadgen_id) {
+        console.error('❌ Missing leadgen_id in leadData');
+        return;
+      }
+
+      console.log(`📝 Writing document with ID: ${leadData.leadgen_id}`);
+
+      db.collection('Leads').doc(leadData.leadgen_id).set(leadData)
+        .then(() => console.log(`✅ Lead ${leadData.leadgen_id} saved to Firestore`))
         .catch(err => console.error('❌ Error saving lead:', err));
     });
   });
+
   res.sendStatus(200);
 });
 
-app.get('/webhook', (req, res) => {
-  console.log('GET /webhook hit');
-});
-
-app.listen(port, () => console.log(`Server running on port ${port}`));
+app.listen(port, () => console.log(`🚀 Server running on port ${port}`));
