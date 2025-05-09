@@ -40,7 +40,8 @@ app.post('/webhook', (req, res) => {
     entry.changes.forEach(change => {
       const leadData = change.value;
       console.log('Received lead data:', leadData);
-      db.collection('Leads').add(leadData)
+      // db.collection('Leads').add(leadData)
+db.collection('Leads').doc(leadData.leadgen_id).set(leadData)
         .then(() => console.log('✅ Lead saved to Firestore'))
         .catch(err => console.error('❌ Error saving lead:', err));
     });
