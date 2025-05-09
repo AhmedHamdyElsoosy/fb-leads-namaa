@@ -15,7 +15,7 @@ const db = admin.firestore();
 
 // Verify Facebook webhook
 app.get('/webhook', (req, res) => {
-  const VERIFY_TOKEN = "YOUR_VERIFY_TOKEN";
+  const VERIFY_TOKEN = "https://fb-leads-namaa.onrender.com";
   const mode = req.query['hub.mode'];
   const token = req.query['hub.verify_token'];
   const challenge = req.query['hub.challenge'];
