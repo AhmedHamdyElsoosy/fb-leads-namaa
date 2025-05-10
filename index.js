@@ -74,16 +74,31 @@ app.post('/webhook', (req, res) => {
       return;
     }
 
+    // const zapierDoc = {
+    //   name: fullName,
+    //   mobile: phone,
+    //   campaignId: campaignId,
+    //   adsetId:adsetId,
+    //   campaignName:campaignName,
+    //   adName:adName,
+    //   email:email,
+    //   timeStamp: new Date().toISOString()
+    // };
+
     const zapierDoc = {
-      name: fullName,
-      mobile: phone,
-      campaignId: campaignId,
-      adsetId:adsetId,
-      campaignName:campaignName,
-      adName:adName,
-      email:email,
-      timeStamp: new Date().toISOString()
-    };
+  name: fullName,
+  mobile: phone,
+  campaignId: req.body.campaignId || null,
+  adsetId: req.body.adsetId || null,
+  campaignName: req.body.campaignName || null,
+  adName: req.body.adName || null,
+  source: req.body.source || null,
+  channel: req.body.channel || null,
+  email: req.body.email || null, // ← مهم ما يكونش undefined
+  timestamp: new Date().toISOString()
+};
+
+
 
     const docId = `${req.body.mobile}_${req.body.name}`;
 
