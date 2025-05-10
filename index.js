@@ -85,7 +85,7 @@ app.post('/webhook', (req, res) => {
       timeStamp: new Date().toISOString()
     };
 
-    const docId = req.body.mobile || `zapier_${Date.now()}`;
+    const docId = `${req.body.mobile}_${req.body.name}`;
 
     console.log(`📝 Writing Zapier document with ID: ${docId}`);
 
