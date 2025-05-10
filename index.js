@@ -60,8 +60,8 @@ app.post('/webhook', (req, res) => {
 
   } else {
     // طريقة Zapier (مباشرة)
-    const fullName = req.body.full_name;
-    const phone = req.body.phone_number;
+    const fullName = req.body.name;
+    const phone = req.body.mobile;
 
     if (!fullName || !phone) {
       console.error('❌ Missing full_name or phone_number in Zapier payload');
@@ -70,8 +70,8 @@ app.post('/webhook', (req, res) => {
     }
 
     const zapierDoc = {
-      full_name: fullName,
-      phone_number: phone,
+      name: fullName,
+      mobile: phone,
       timestamp: new Date().toISOString()
     };
 
