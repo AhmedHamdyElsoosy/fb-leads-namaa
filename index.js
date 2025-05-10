@@ -39,36 +39,53 @@ app.post('/webhook', (req, res) => {
   console.log('🔥 POST /webhook hit');
   console.log('📦 Full body:', JSON.stringify(req.body, null, 2));
 
-  const entries = req.body.entry;
-  if (!entries) {
-    console.error('❌ No entries in request body');
-    res.sendStatus(400);
-    return;
-  }
+  if (req.body.entry) {
+    // طريقة Facebook المباشرة
+    const entries = req.body.entry;
+    entries.forEach(entry => {
+      entry.changes.forEach(change => {
+        const leadData = change.value;
+        if (!leadData || !leadData.leadgen_id) {
+          console.error('❌ Missing leadgen_id in leadData');
+          return;
+        }
 
-  entries.forEach(entry => {
-    if (!entry.changes) {
-      console.error('❌ No changes in entry');
+        console.log(`📝 Writing document with ID: ${leadData.leadgen_id}`);
+
+        db.collection('Leads').doc(leadData.leadgen_id).set(leadData)
+          .then(() => console.log(`✅ Lead ${leadData.leadgen_id} saved to Firestore`))
+          .catch(err => console.error('❌ Error saving lead:', err));
+      });
+    });
+
+  } else {
+    // طريقة Zapier (مباشرة)
+    const fullName = req.body.full_name;
+    const phone = req.body.phone_number;
+
+    if (!fullName || !phone) {
+      console.error('❌ Missing full_name or phone_number in Zapier payload');
+      res.status(400).send('Missing required fields');
       return;
     }
 
-    entry.changes.forEach(change => {
-      const leadData = change.value;
+    const zapierDoc = {
+      full_name: fullName,
+      phone_number: phone,
+      timestamp: new Date().toISOString()
+    };
 
-      if (!leadData || !leadData.leadgen_id) {
-        console.error('❌ Missing leadgen_id in leadData');
-        return;
-      }
+    const docId = req.body.id || `zapier_${Date.now()}`;
 
-      console.log(`📝 Writing document with ID: ${leadData.leadgen_id}`);
+    console.log(`📝 Writing Zapier document with ID: ${docId}`);
 
-      db.collection('Leads-N').doc(leadData.leadgen_id).set(leadData)
-        .then(() => console.log(`✅ Lead ${leadData.leadgen_id} saved to Firestore`))
-        .catch(err => console.error('❌ Error saving lead:', err));
-    });
-  });
+    db.collection('Leads').doc(docId).set(zapierDoc)
+      .then(() => console.log(`✅ Zapier Lead ${docId} saved to Firestore`))
+      .catch(err => console.error('❌ Error saving Zapier lead:', err));
+  }
 
   res.sendStatus(200);
 });
+
 
 app.listen(port, () => console.log(`🚀 Server running on port ${port}`));
