@@ -81,7 +81,7 @@ app.post('/webhook', (req, res) => {
       adsetId:adsetId,
       campaignName:campaignName,
       adName:adName,
-      email:email
+      email:email,
       timeStamp: new Date().toISOString()
     };
 
