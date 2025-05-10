@@ -62,6 +62,11 @@ app.post('/webhook', (req, res) => {
     // طريقة Zapier (مباشرة)
     const fullName = req.body.name;
     const phone = req.body.mobile;
+    const campaignId = req.body.campaignId;
+    const adsetId = req.body.adsetId;
+    const campaignName = req.body.campaignName;
+    const adName = req.body.adName;
+    const email = req.body.email;
 
     if (!fullName || !phone) {
       console.error('❌ Missing full_name or phone_number in Zapier payload');
@@ -72,10 +77,15 @@ app.post('/webhook', (req, res) => {
     const zapierDoc = {
       name: fullName,
       mobile: phone,
-      timestamp: new Date().toISOString()
+      campaignId: campaignId,
+      adsetId:adsetId,
+      campaignName:campaignName,
+      adName:adName,
+      email:email
+      timeStamp: new Date().toISOString()
     };
 
-    const docId = req.body.id || `zapier_${Date.now()}`;
+    const docId = req.body.mobile || `zapier_${Date.now()}`;
 
     console.log(`📝 Writing Zapier document with ID: ${docId}`);
 
